@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,40 +17,36 @@ import org.springframework.messaging.handler.annotation.Payload;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
+@EnableKafka
 @SpringBootApplication
 public class NumeroEnfileiradoApplication {
 
     public static void main(String[] args) throws Exception {
 
-        // 1 - enfileirar numeros (1 vez só)...
-
-        // 2 - tudo que for numero par, ler no consumer par.
-
-        // 3 - tudo que for numero impar, ler no consumer impar.
-
-        // 4 - ler no consumer geral, qualquer numero.
 
         ConfigurableApplicationContext context = SpringApplication.run(NumeroEnfileiradoApplication.class, args);
 
-        NumeroEnfileiradoApplication.MessageProducer producer = context.getBean(NumeroEnfileiradoApplication.MessageProducer.class);
+//        NumeroEnfileiradoApplication.MessageProducer producer = context.getBean(NumeroEnfileiradoApplication.MessageProducer.class);
+
+
         NumeroEnfileiradoApplication.MessageListener listener =
                 context.getBean(NumeroEnfileiradoApplication.MessageListener.class);
 
-//        producer.sendMessage("x");
-//        producer.sendMessage("sd");
-//        producer.sendMessage("sdf");
-//        producer.sendMessage("sdfdfd");
-//        producer.sendMessage("dfdf");
+//        producer.sendMessage("1");
+//        producer.sendMessage("2");
+//        producer.sendMessage("3");
+//        producer.sendMessage("4");
+//        producer.sendMessage("5");
 
 
+//        System.out.println("INICIOU LISTENER AWAIT");
+//
+//        listener.latch.await(60, TimeUnit.SECONDS);
+//
+//        System.out.println("FINALIZOU LISTENER AWAIT");
 
-        System.out.println("INICIOU LISTENER AWAIT");
 
-        listener.latch.await(60, TimeUnit.SECONDS);
-
-        System.out.println("FINALIZOU LISTENER AWAIT");
-
+        Thread.sleep(30000);
 
         context.close();
 
@@ -78,13 +75,13 @@ public class NumeroEnfileiradoApplication {
 
     public static class MessageListener {
 
-        private CountDownLatch latch = new CountDownLatch(100);
+//        private CountDownLatch latch = new CountDownLatch(100);
 
         @KafkaListener(topics = "numeroTopic", groupId = "todosNumeros",
                 containerFactory = "todosNumerosKafkaListenerContainerFactory")
         public void listenGroupTodosNumeros(String message) {
             System.out.println("MSG RECEBIDA NO CONSUMER GROUP 'todosNumeros': " + message);
-            latch.countDown();
+//            latch.countDown();
         }
 
     }
